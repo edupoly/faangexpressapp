@@ -4,7 +4,10 @@ html
         link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous")
     body 
         h1 Hello Edupoly NodeJS Express Training
-        h2 I like #{hobby}
-        ul(class="m-4 p-2 list-unstyled")
-            each m in marks
-                li(class="bg-success p-2 m-2") #{m}
+        div(class="d-flex flex-wrap m-4 p-2 list-unstyled")
+            each product in products
+                a(href=`/details/${product.id}`)
+                    div(class="card text-bg-dark m-2" style="width:200px")
+                        img(src=`${product.thumbnail}` class="card-img w-100" alt="...")
+                        div(class="card-img-overlay")
+                            b(class="card-title") #{product.title}

@@ -1,0 +1,12 @@
+html
+    head
+        title Product Details
+        link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous")
+    body 
+        h1 Product Details
+        div(class="d-flex flex-wrap")
+            div(class="w-50 p-5")
+                img(src=`${product.thumbnail}` width="100%")
+            div(class="w-50 p-5")
+                h1 #{product.title}
+                h2 $ #{product.price}
