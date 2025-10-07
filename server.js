@@ -2,12 +2,12 @@ var express = require("express");
 var cors = require("cors");
 var fs = require("fs");
 var bodyParser = require("body-parser");
-var cookieParser = require("cookie-parser");
+var session = require("express-session");
 var app = express();
 app.set("view engine", "pug");
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+
 app.use(express.static(__dirname + "/general"));
 app.get("/myTodos", async (req, res) => {
   console.log(req.cookies.username);
