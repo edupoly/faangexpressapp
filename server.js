@@ -1,62 +1,24 @@
 var express = require("express");
-var cors = require("cors");
-var bodyParser = require("body-parser");
-var fs = require("fs");
 var app = express();
-app.use(cors());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
-app.post("/addStudent", (req, res) => {
-  var students = fs.readFileSync("students.txt").toString();
-  console.log(typeof students);
-  console.log(typeof JSON.parse(students));
-  // console.log(req.body);
-  var k = JSON.parse(students);
-  // console.log(typeof k);
-  k.push(req.body);
-  console.log(k);
-  fs.writeFileSync("students.txt", JSON.stringify(k));
-  res.send("Please wait");
-});
-
-app.get("/add", function (req, res) {
-  console.log(req.query);
-  res.send(+req.query.num1 + +req.query.num2);
-});
-app.post("/add", function (req, res) {
-  console.log(req.body);
-  res.send("Undara nayana");
-});
-app.get("/abc", function (req, res) {
-  console.log("get request for abc route recieved");
-  res.header("Content-Type", "text/plain");
-  // res.contentType = "text/html";
-  res.send("AAgura babu");
-});
-
-app.post("/abc", function (req, res) {
-  console.log("POST request for abc route recieved");
-  res.send("AAgura babu");
-});
-app.put("/abc", function (req, res) {
-  console.log("PUT request for abc route recieved");
-  res.send("AAgura babu");
-});
-app.delete("/abc", function (req, res) {
-  console.log("DELETE request for abc route recieved");
-  res.send("AAgura babu");
-});
-
-app.get("/add/:n1/:n2", (req, res) => {
-  res.send(+req.params.n1 + +req.params.n2);
-});
-
-app.get("/mul/:n1/:n2", (req, res) => {
-  res.send(req.params.n1 * req.params.n2);
+var session = require("express-session");
+app.use(session({ secret: "Evvariki cheppaku...SHH!!!!" }));
+app.get("/", (req, res) => {
+  if (req.session.count) {
+    req.session.count++;
+  } else {
+    req.session.count = 1;
+  }
+  console.log(req.sessionID);
+  res.send("Count::::" + req.session.count);
 });
 
 app.listen(3500, () => {
-  console.log("Server running on 3500");
+  console.log("server running on 3500");
 });
-// http methods : GET POST PUT DELETE (CRUD)
+// s%3Ack5uN79dwS8egP8qVBsVAIJEngbTt3xb.2hkcgW%2BY8F1YMXpnwsY7pI15PCeZYLkdg%2BqsfGtNauA
+// s:GxYwkhot5-1R8yldj7zCJUk3fgAhqPkn.Gu2N4w37pkjhyd47p8M7Ekms6vxJaEaQdSaYrt8bhHU
+// s:GxYwkhot5-1R8yldj7zCJUk3fgAhqPkn.Gu2N4w37pkjhyd47p8M7Ekms6vxJaEaQdSaYrt8bhHU
+// s:k8-NGy89LpDSFE_mcbTHjogaCuclhyCc.QdgN4nqzIWPufgjOCQxp1lWYOVE9PWm7R/0PYp37uqw
+// s:k8-NGy89LpDSFE_mcbTHjogaCuclhyCc.QdgN4nqzIWPufgjOCQxp1lWYOVE9PWm7R/0PYp37uqw
+// s:k8-NGy89LpDSFE_mcbTHjogaCuclhyCc.QdgN4nqzIWPufgjOCQxp1lWYOVE9PWm7R/0PYp37uqw
+// s:0U5as0WRnHLXyeVB1rXXdhCE3nfPVaPA.Pv2uDYl+iP0Bayg3SeNHw/pE5kCW7o6yigMNmOFtYRg
