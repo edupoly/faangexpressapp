@@ -7,23 +7,23 @@ var app = express();
 app.set("view engine", "pug");
 
 app.use(bodyParser.urlencoded({ extended: false }));
-
+app.use(session({ secret: "naaku thelidu!!!!" }));
 app.use(express.static(__dirname + "/general"));
-app.get("/myTodos", async (req, res) => {
-  console.log(req.cookies.username);
-  var data = await fs.promises.readFile("todos.txt");
-  var f1 = JSON.parse(data.toString());
-  var userTodos = f1.filter((todo) => {
-    if (todo.user === req.cookies.username) {
-      return true;
-    }
-  });
-  res.render("userTodos", { todos: userTodos });
+
+app.get("/", function (req, res) {
+  res.render("Home");
 });
-app.get("/allTodos", async (req, res) => {
-  var data = await fs.promises.readFile("todos.txt");
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+  // res.render("Home")
+  res.redirect("/");
+});
+app.post("/signup", async (req, res) => {
+  var data = await fs.promises.readFile("users.txt");
   var f1 = JSON.parse(data.toString());
-  res.render("allTodos", { todos: f1 });
+  f1.push(req.body);
+  var result = await fs.promises.writeFile("users.txt", JSON.stringify(f1));
+  res.send("<h1>Nuv thopu ra babu</h1>");
 });
 
 app.post("/login", async (req, res) => {
@@ -39,19 +39,41 @@ app.post("/login", async (req, res) => {
     }
   });
   if (r) {
-    res.cookie("username", r.username);
-    res.cookie("password", r.password);
-    res.redirect("index.html");
+    req.session.username = req.body.username;
+    req.session.password = req.body.password;
+    console.log(req.session);
+    res.render("Dashboard");
   } else {
     res.send("Credentials chusukobadla");
   }
 });
-app.post("/signup", async (req, res) => {
-  var data = await fs.promises.readFile("users.txt");
+
+app.use(function (req, res, next) {
+  console.log(req.session);
+  if (req.session.username && req.session.password) {
+    next();
+  } else {
+    res.redirect("/login.html");
+  }
+});
+
+app.get("/myTodos", async (req, res) => {
+  console.log(req.session.username + " requested");
+  // res.send("undara babu");
+  var data = await fs.promises.readFile("todos.txt");
   var f1 = JSON.parse(data.toString());
-  f1.push(req.body);
-  var result = await fs.promises.writeFile("users.txt", JSON.stringify(f1));
-  res.send("<h1>Nuv thopu ra babu</h1>");
+  var userTodos = f1.filter((todo) => {
+    if (todo.user === req.session.username) {
+      return true;
+    }
+  });
+  res.render("userTodos", { todos: userTodos });
+});
+
+app.get("/allTodos", async (req, res) => {
+  var data = await fs.promises.readFile("todos.txt");
+  var f1 = JSON.parse(data.toString());
+  res.render("allTodos", { todos: f1 });
 });
 
 app.post("/addTodo", async (req, res) => {
