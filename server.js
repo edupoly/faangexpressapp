@@ -4,20 +4,31 @@ var fs = require("fs");
 var bodyParser = require("body-parser");
 var session = require("express-session");
 var app = express();
+var leadsRouter = require("./routes/lead.routes");
 app.set("view engine", "pug");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({ secret: "naaku thelidu!!!!" }));
 app.use(express.static(__dirname + "/general"));
 
+app.use("/leads", leadsRouter);
+
 app.get("/", function (req, res) {
-  res.render("Home");
+  req.session.username = "balu";
+  req.session.password = "123";
+  if (req.session.username && req.session.password) {
+    res.render("Dashboard");
+  } else {
+    res.render("Home");
+  }
 });
+
 app.get("/logout", (req, res) => {
   req.session.destroy();
   // res.render("Home")
   res.redirect("/");
 });
+
 app.post("/signup", async (req, res) => {
   var data = await fs.promises.readFile("users.txt");
   var f1 = JSON.parse(data.toString());
@@ -57,6 +68,10 @@ app.use(function (req, res, next) {
   }
 });
 
+app.get("/addTodo", (req, res) => {
+  res.render("addTodo");
+});
+
 app.get("/myTodos", async (req, res) => {
   console.log(req.session.username + " requested");
   // res.send("undara babu");
@@ -77,11 +92,10 @@ app.get("/allTodos", async (req, res) => {
 });
 
 app.post("/addTodo", async (req, res) => {
-  console.log(req.cookies);
   var data = await fs.promises.readFile("todos.txt");
   // console.log(data);
   var f1 = JSON.parse(data.toString());
-  f1.push({ todo: req.body.todo, user: req.cookies.username });
+  f1.push({ todo: req.body.todo, user: req.session.username });
   console.log(f1);
   var result = await fs.promises.writeFile("todos.txt", JSON.stringify(f1));
   res.send("<h1>Ipoindi ra babu</h1>");
@@ -138,3 +152,5 @@ app.listen(3500, () => {
 // // app.get("/contactus", (req, res) => {
 // //   res.sendFile(__dirname + "/contactus.html");
 // // });
+
+// (1/2)*200 // 180/60//1.5 min
