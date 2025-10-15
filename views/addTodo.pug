@@ -5,7 +5,10 @@ html
 
 body
     include header.pug
-    form(action="/todos/addTodo" method="POST")
-        input(type="text" placeholder="Enter Todo Item" name="todo")
-        br
-        button Add Todo
+    div(class="container")
+        form(action="/todos/addTodo" method="POST" enctype="multipart/form-data")
+            input(type="text" placeholder="Enter Todo Item" name="todo")
+            br
+            input(type="file" name="todoPic")
+            br
+            button Add Todo

@@ -1,9 +1,13 @@
 var express = require("express");
 var cors = require("cors");
 var fs = require("fs");
+var multer = require("multer");
 var bodyParser = require("body-parser");
+var cors = require("cors");
 var session = require("express-session");
+const upload = multer({ dest: "uploads/" });
 var app = express();
+app.use(cors());
 var leadsRouter = require("./routes/lead.routes");
 var todosRouter = require("./routes/todos.routes");
 app.set("view engine", "pug");
@@ -11,6 +15,7 @@ app.set("view engine", "pug");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({ secret: "naaku thelidu!!!!" }));
 app.use(express.static(__dirname + "/general"));
+app.use(express.static(__dirname + "/uploads"));
 
 app.get("/", function (req, res) {
   req.session.username = "balu";
@@ -37,7 +42,6 @@ app.post("/signup", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-  console.log(req.body);
   var data = await fs.promises.readFile("users.txt");
   var allusers = JSON.parse(data.toString());
   var r = allusers.find((user) => {
@@ -58,14 +62,14 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.use(function (req, res, next) {
-  console.log(req.session);
-  if (req.session.username && req.session.password) {
-    next();
-  } else {
-    res.redirect("/login.html");
-  }
-});
+// app.use(function (req, res, next) {
+//   console.log(req.session);
+//   if (req.session.username && req.session.password) {
+//     next();
+//   } else {
+//     res.redirect("/login.html");
+//   }
+// });
 
 app.use("/leads", leadsRouter);
 app.use("/todos", todosRouter); //http://localhost:3500/todos/myTodos

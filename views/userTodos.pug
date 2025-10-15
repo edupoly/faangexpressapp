@@ -6,4 +6,8 @@ html
         include header.pug
         div(class="d-flex flex-wrap m-4 p-2 list-unstyled")
             each todo in todos
-                li(class="m-4 border border-secondary rounded p-3") #{todo.todo}
+                li(class="m-4 border border-secondary rounded p-3") 
+                    b #{todo.todo}
+                    br
+                    //- i #{todo.imagePath}
+                    //- img(src=`${todo.imagePath}`)
