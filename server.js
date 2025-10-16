@@ -1,59 +1,38 @@
 var express = require("express");
-var cors = require("cors");
-var bodyParser = require("body-parser");
-var fs = require("fs");
 var app = express();
+var fs = require("fs");
+var cors = require("cors");
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
-app.post("/addStudent", (req, res) => {
-  var students = fs.readFileSync("students.txt").toString();
-  console.log(typeof students);
-  console.log(typeof JSON.parse(students));
-  // console.log(req.body);
-  var k = JSON.parse(students);
-  // console.log(typeof k);
-  k.push(req.body);
-  console.log(k);
-  fs.writeFileSync("students.txt", JSON.stringify(k));
-  res.send("Please wait");
+app.get("/products", (req, res) => {
+  fs.readFile("products.txt", (err, buf) => {
+    if (err) {
+      console.log("error vachadu");
+    } else {
+      res.send(buf.toString());
+    }
+  });
+});
+app.get("/getProductById/:id", (req, res) => {
+  var timestamp = Math.random() * 10000;
+  console.log(timestamp);
+  setTimeout(() => {
+    var products = JSON.parse(fs.readFileSync("products.txt").toString());
+    res.send(products.find((product) => product.id == req.params.id));
+  }, timestamp);
+});
+app.get("/employees", (req, res) => {
+  var buf = fs.readFileSync("employees.txt");
+  var data = buf.toString();
+  res.send(data);
+});
+app.get("/students", (req, res) => {
+  var buf = fs.readFileSync("students.txt");
+  var data = buf.toString();
+  res.send(data);
 });
 
-app.get("/add", function (req, res) {
-  console.log(req.query);
-  res.send(+req.query.num1 + +req.query.num2);
-});
-app.post("/add", function (req, res) {
-  console.log(req.body);
-  res.send("Undara nayana");
-});
-app.get("/abc", function (req, res) {
-  console.log("get request for abc route recieved");
-  res.header("Content-Type", "text/plain");
-  // res.contentType = "text/html";
-  res.send("AAgura babu");
-});
-
-app.post("/abc", function (req, res) {
-  console.log("POST request for abc route recieved");
-  res.send("AAgura babu");
-});
-app.put("/abc", function (req, res) {
-  console.log("PUT request for abc route recieved");
-  res.send("AAgura babu");
-});
-app.delete("/abc", function (req, res) {
-  console.log("DELETE request for abc route recieved");
-  res.send("AAgura babu");
-});
-
-app.get("/add/:n1/:n2", (req, res) => {
-  res.send(+req.params.n1 + +req.params.n2);
-});
-
-app.get("/mul/:n1/:n2", (req, res) => {
-  res.send(req.params.n1 * req.params.n2);
+app.get("/", (req, res) => {
+  res.send("Hello Praveen");
 });
 
 app.listen(3500, () => {
