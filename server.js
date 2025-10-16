@@ -20,6 +20,14 @@ app.get("/getProductById/:id", (req, res) => {
     res.send(products.find((product) => product.id == req.params.id));
   }, timestamp);
 });
+app.get("/getAllProducts", (req, res) => {
+  var timestamp = Math.random() * 1000;
+  console.log(timestamp);
+  setTimeout(() => {
+    var products = JSON.parse(fs.readFileSync("products.txt").toString());
+    res.send(products);
+  }, timestamp);
+});
 app.get("/employees", (req, res) => {
   var buf = fs.readFileSync("employees.txt");
   var data = buf.toString();
